@@ -21,3 +21,23 @@ This project combines historical Clouded Apollo (*Parnassius mnemosyne*) observa
 | Speed storage | MongoDB | Store processed data for fast access |
 | Visualization | Streamlit | Interactive analytical dashboard |
 | Containerization | Docker Compose | Deploy and connect |
+
+## Start the infrastructure
+
+Install Docker Desktop with Docker Compose, then run the following command from the repository root:
+
+```bash
+docker compose up --build
+```
+
+Compose starts Zookeeper, Kafka, Spark, MongoDB, and the Streamlit dashboard. It also creates the `butterfly-observations` Kafka topic and initializes the MongoDB collections on the first database start. The services are available at:
+
+| Service | Address |
+|---------|---------|
+| Streamlit | http://localhost:8501 |
+| Spark Master UI | http://localhost:8080 |
+| Spark Worker UI | http://localhost:8081 |
+| Kafka | `localhost:9092` from the host, `kafka:29092` inside Docker |
+| MongoDB | `mongodb://localhost:27017` |
+
+Stop the services with `docker compose down`. Persistent Kafka and MongoDB data is stored in named Docker volumes. To remove those volumes as well, run `docker compose down --volumes`.

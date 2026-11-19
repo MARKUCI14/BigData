@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   # --- Zookeeper (required by Kafka) ---
   zookeeper:
@@ -27,10 +25,14 @@ services:
         condition: service_healthy
     ports:
       - "9092:9092"
+    expose:
+      - "29092"
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:29092,PLAINTEXT_HOST://0.0.0.0:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
@@ -57,7 +59,7 @@ services:
         condition: service_healthy
     entrypoint: ["/bin/bash", "-c"]
     command: |
-      "
+      set -e
       echo 'Creating Kafka topic: butterfly-observations...'
       kafka-topics --create --if-not-exists \
         --bootstrap-server kafka:29092 \
@@ -67,7 +69,6 @@ services:
         --config retention.ms=604800000
       echo 'Topic created successfully.'
       kafka-topics --describe --bootstrap-server kafka:29092 --topic butterfly-observations
-      "
     networks:
       - bigdata-net
 
@@ -97,6 +98,7 @@ services:
       - SPARK_MASTER_HOST=spark-master
       - SPARK_MASTER_PORT=7077
       - SPARK_MASTER_WEBUI_PORT=8080
+      - SPARK_CONF_DIR=/opt/bitnami/spark/conf
     ports:
       - "8080:8080"
       - "7077:7077"
@@ -104,6 +106,7 @@ services:
       - ./data:/opt/bitnami/spark/data
       - ./src:/opt/bitnami/spark/src
       - ./config:/opt/bitnami/spark/config
+      - ./config/spark-defaults.conf:/opt/bitnami/spark/conf/spark-defaults.conf:ro
     networks:
       - bigdata-net
     healthcheck:
@@ -125,12 +128,14 @@ services:
       - SPARK_WORKER_MEMORY=2g
       - SPARK_WORKER_CORES=2
       - SPARK_WORKER_WEBUI_PORT=8081
+      - SPARK_CONF_DIR=/opt/bitnami/spark/conf
     ports:
       - "8081:8081"
     volumes:
       - ./data:/opt/bitnami/spark/data
       - ./src:/opt/bitnami/spark/src
       - ./config:/opt/bitnami/spark/config
+      - ./config/spark-defaults.conf:/opt/bitnami/spark/conf/spark-defaults.conf:ro
     networks:
       - bigdata-net
 
