@@ -218,3 +218,35 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# === Project-specific ===
+
+# Data Lake layers (generated Parquet files)
+data/bronze/
+data/silver/
+data/gold/
+!data/bronze/
+!data/silver/
+!data/gold/
+
+# Spark checkpoints
+data/checkpoints/
+**/checkpoints/
+
+# Keep empty data lake layer directories in version control
+!data/bronze/.gitkeep
+!data/silver/.gitkeep
+!data/gold/.gitkeep
+
+# Environment variables
+.env
+
+# Spark logs and event logs
+spark-warehouse/
+metastore_db/
+derby.log
+spark-events/
+logs/
+
+# MongoDB data
+mongodb-data/
