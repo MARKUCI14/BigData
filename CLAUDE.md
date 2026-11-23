@@ -6,7 +6,7 @@ This is Team Work Dream Work's Big Data course project. It studies the associati
 
 ## Source of truth
 
-- Read `docs/README.md` and the relevant topic documents before making project changes. Architecture decisions live under `docs/architecture/`, course requirements under `docs/course/`, and development guidance under `docs/dev-guide/`.
+- Read `docs/README.md` and the relevant topic documents before making project changes. Architecture decisions live under `docs/architecture/`, course requirements under `docs/course/`, development guidance under `docs/dev-guide/`, and group workflow guidance is in `docs/contribution.md`.
 - The accepted proposal and course brief set the research scope and deliverables. The proposal's architecture is preliminary; implementation decisions can be refined and must be recorded in `docs/technical-decisions.md`.
 - Treat code and configuration in the repository as the truth for what is implemented. Keep documentation explicit about planned versus implemented behavior.
 - Do not invent existing modules, commands, schemas, data files, services, or dependency versions. If implementation context is missing, inspect the repository and state assumptions.

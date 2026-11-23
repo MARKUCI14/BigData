@@ -1,0 +1,22 @@
+name: Documentation task
+description: Request a documentation correction, addition, or clarification.
+title: "docs: "
+labels: ["documentation"]
+body:
+  - type: textarea
+    id: need
+    attributes:
+      label: Documentation need
+      description: What is missing, unclear, or out of date?
+    validations:
+      required: true
+  - type: input
+    id: location
+    attributes:
+      label: Relevant document or section
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Desired outcome
+    validations:
+      required: true

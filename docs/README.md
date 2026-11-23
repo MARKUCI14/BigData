@@ -10,6 +10,7 @@ This directory describes the Clouded Apollo and climate data platform, its cours
 - [Data model](data-model.md) — conceptual entities and candidate storage layout.
 - [Technical decisions](technical-decisions.md) — open decisions and current direction.
 - [Development guides](dev-guide/) — setup and contribution guidance.
+- [Team contribution guide](contribution.md) — shared workflow, ownership, review, data handling, and course collaboration practices.
 - [Course requirements and deliverables](course/course-requirements.md) — mapping from the 2026–2027 brief to project evidence.
 - [Data and analysis notes](data-notes.md) — source assumptions, limitations, and analysis principles.
 
