@@ -1,0 +1,25 @@
+name: Research or data question
+description: Track a research-method, source-data, or analysis question.
+title: "research: "
+labels: ["research"]
+body:
+  - type: textarea
+    id: question
+    attributes:
+      label: Research question or data uncertainty
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: Relevant source and coverage
+      description: Identify source, period, geography, units, and known limitations where available.
+  - type: textarea
+    id: method
+    attributes:
+      label: Proposed method or options
+  - type: textarea
+    id: interpretation
+    attributes:
+      label: Assumptions and interpretation risks
+      description: Consider observation effort, missingness, spatial/temporal alignment, and association versus causation.
