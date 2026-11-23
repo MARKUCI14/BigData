@@ -1,16 +1,17 @@
 # Project documentation
 
-This directory describes the Clouded Apollo and climate data platform, its course requirements, proposed architecture, and implementation decisions. The repository is currently in the planning stage; proposed designs are labeled as plans and should be updated as implementation becomes concrete.
+This directory describes the Clouded Apollo and climate data platform, its course requirements, proposed architecture, data model, and implementation decisions. Its layout separates architecture records, course materials, and development guidance. The repository is currently in the planning stage; proposed designs are labeled as plans and should be updated as implementation becomes concrete.
 
 ## Documents
 
 - [Requirements](requirements.md) — research scope and functional/non-functional expectations.
-- [Architecture](architecture.md) — proposed components and data flows.
-- [Database and data model](database.md) — conceptual entities and candidate storage layout.
-- [Technical decisions](technical-decisions.md) — selected direction, rationale, open decisions, and decision log.
-- [Setup and development](setup.md) — current repository status and future setup guidance.
-- [Course deliverables](course-deliverables.md) — mapping from the 2026–2027 brief to project evidence.
-- [Data and analysis notes](data-and-analysis.md) — source assumptions, limitations, and analysis principles.
+- [Architecture overview](architecture/overview.md) — proposed components and data flows.
+- [Architecture decision records](architecture/) — rationale and status for significant design choices.
+- [Data model](data-model.md) — conceptual entities and candidate storage layout.
+- [Technical decisions](technical-decisions.md) — open decisions and current direction.
+- [Development guides](dev-guide/) — setup and contribution guidance.
+- [Course requirements and deliverables](course/course-requirements.md) — mapping from the 2026–2027 brief to project evidence.
+- [Data and analysis notes](data-notes.md) — source assumptions, limitations, and analysis principles.
 
 ## Project summary
 

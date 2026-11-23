@@ -2,6 +2,8 @@
 
 This log separates accepted project direction from decisions still to be made. Add dated entries as implementation choices are finalized.
 
+Detailed records for the current proposed direction are in [architecture ADRs](architecture/): Python language, medallion data stages, Kafka/Spark streaming, MongoDB serving, and Streamlit visualization.
+
 ## Current direction
 
 | Topic | Direction | Rationale/status |

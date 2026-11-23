@@ -6,7 +6,7 @@ This is Team Work Dream Work's Big Data course project. It studies the associati
 
 ## Source of truth
 
-- Read `docs/README.md` and the relevant topic documents before making project changes.
+- Read `docs/README.md` and the relevant topic documents before making project changes. Architecture decisions live under `docs/architecture/`, course requirements under `docs/course/`, and development guidance under `docs/dev-guide/`.
 - The accepted proposal and course brief set the research scope and deliverables. The proposal's architecture is preliminary; implementation decisions can be refined and must be recorded in `docs/technical-decisions.md`.
 - Treat code and configuration in the repository as the truth for what is implemented. Keep documentation explicit about planned versus implemented behavior.
 - Do not invent existing modules, commands, schemas, data files, services, or dependency versions. If implementation context is missing, inspect the repository and state assumptions.
@@ -25,8 +25,3 @@ This is Team Work Dream Work's Big Data course project. It studies the associati
 - Prefer small, clearly named modules with explicit input/output contracts. Make processing repeatable and configuration external to source code.
 - Add or update documentation when interfaces, schemas, setup steps, architecture, or decisions change. Record significant choices and alternatives in `docs/technical-decisions.md`.
 - Avoid adding dependencies, infrastructure, or services without a project need. Never put secrets in source control.
-- Any generative AI assistance used for project work must be acknowledged and documented, as required by the course brief.
-
-## Course outcome
-
-The end-to-end project should demonstrate heterogeneous data sources (including a real or realistically simulated stream), ingestion, historical and near-real-time processing, storage, meaningful analytics, visualizations, reproducible execution, deployment instructions, and team understanding of the architecture. See `docs/requirements.md` and `docs/course-deliverables.md`.

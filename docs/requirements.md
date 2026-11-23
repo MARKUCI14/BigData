@@ -34,7 +34,7 @@ This is an association study. Citizen-science observation counts do not directly
 | N-05 | Interpretability: clearly label units, dates, geographic levels, missingness, and the limits of observation-based measures. |
 | N-06 | Scalability: explain how the design handles growth in historical records and continuously arriving events; demonstrate appropriate Big Data technologies. |
 | N-07 | Maintainability: keep configuration and secrets out of source code; document interfaces and significant decisions. |
-| N-08 | Course compliance: acknowledge and document generative AI use, and prepare documentation and execution/deployment instructions. |
+| N-08 | Course compliance: prepare documentation and execution/deployment instructions. |
 
 ## Constraints and exclusions
 
@@ -46,4 +46,4 @@ This is an association study. Citizen-science observation counts do not directly
 
 ## Acceptance evidence
 
-Evidence should include runnable batch and streaming workflows, integrated data, analytics and visualizations, a coherent architecture explanation, and reproducible setup/execution documentation. See [course deliverables](course-deliverables.md).
+Evidence should include runnable batch and streaming workflows, integrated data, analytics and visualizations, a coherent architecture explanation, and reproducible setup/execution documentation. See [course requirements and deliverables](course/course-requirements.md).
