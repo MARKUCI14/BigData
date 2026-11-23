@@ -6,6 +6,7 @@ This directory describes the Clouded Apollo and climate data platform, its cours
 
 - [Requirements](requirements.md) — research scope and functional/non-functional expectations.
 - [Architecture overview](architecture/overview.md) — proposed components and data flows.
+- [Architecture layer guides](architecture/layers/README.md) — responsibilities, interfaces, and planned files for each layer.
 - [Architecture decision records](architecture/) — rationale and status for significant design choices.
 - [Data model](data-model.md) — conceptual entities and candidate storage layout.
 - [Technical decisions](technical-decisions.md) — open decisions and current direction.

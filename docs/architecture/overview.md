@@ -4,6 +4,8 @@
 
 This is the **proposed** architecture from the accepted proposal and supplied diagram. The repository has no implementation yet, and the choices below are not claims that services are already running. The proposal permits refinement as the team confirms implementation constraints.
 
+For per-layer responsibilities and planned file ownership, see the [architecture layer guides](layers/README.md) and [planned repository file map](layers/file-map.md).
+
 ## Logical flow
 
 ```mermaid
