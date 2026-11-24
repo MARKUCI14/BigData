@@ -70,18 +70,21 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def _load_mongodb_stage() -> object:
-    """Invoke Issue #14's loader when present; leave a clear skip until then."""
+def _load_mongodb_stage(spark: SparkSession) -> object:
+    """Invoke the MongoDB batch loader with the pipeline's shared Spark session."""
     try:
         loader = importlib.import_module("src.storage.load_to_mongodb")
     except ModuleNotFoundError as error:
         if error.name == "src.storage.load_to_mongodb":
-            raise OptionalStageSkipped("MongoDB batch loader is not implemented yet (planned in Issue #14)") from error
+            raise OptionalStageSkipped("MongoDB batch loader module is not present in this deployment") from error
         raise
-    entrypoint = getattr(loader, "run_load", None) or getattr(loader, "main", None)
-    if entrypoint is None:
+    entrypoint = getattr(loader, "run_load", None)
+    if entrypoint is not None:
+        return entrypoint(spark=spark)
+    main = getattr(loader, "main", None)
+    if main is None:
         raise RuntimeError("MongoDB batch loader must expose run_load() or main()")
-    return entrypoint()
+    return main()
 
 
 def build_stages(spark: SparkSession, dry_run: bool) -> list[PipelineStage]:
@@ -144,7 +147,7 @@ def build_stages(spark: SparkSession, dry_run: bool) -> list[PipelineStage]:
         PipelineStage(
             "gold-to-mongodb",
             "all",
-            _load_mongodb_stage,
+            lambda: _load_mongodb_stage(spark),
             (),
             ("gold-analytics",),
         ),

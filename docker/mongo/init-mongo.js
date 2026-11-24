@@ -34,6 +34,16 @@ db.monthly_statistics.createIndex(
 
 print("Created collection 'monthly_statistics' with indexes.");
 
+// --- Collection: correlations ---
+// Stores county, year, and overall temperature-observation correlations
+db.createCollection("correlations");
+db.correlations.createIndex(
+  { group_type: 1, group_value: 1 },
+  { unique: true, name: "idx_group_type_value_unique" }
+);
+
+print("Created collection 'correlations' with indexes.");
+
 // --- Collection: realtime_statistics ---
 // Stores latest streaming metrics and recent observations per county
 db.createCollection("realtime_statistics");
@@ -51,4 +61,4 @@ print("Created collection 'realtime_statistics' with indexes.");
 
 print("MongoDB initialization completed successfully.");
 print("Database: bigdata");
-print("Collections: observations, monthly_statistics, realtime_statistics");
+print("Collections: observations, monthly_statistics, correlations, realtime_statistics");
