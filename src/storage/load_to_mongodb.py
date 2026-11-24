@@ -10,7 +10,7 @@ from datetime import date, datetime, time as datetime_time, timezone
 from pathlib import Path
 from typing import Iterable
 
-from pymongo import MongoClient, ReplaceOne
+from pymongo import MongoClient, ReplaceOne, UpdateOne
 from pyspark.sql import SparkSession
 
 
@@ -43,7 +43,7 @@ def _as_mongo_datetime(value: date | datetime | None) -> datetime | None:
     return datetime.combine(value, datetime_time.min, tzinfo=timezone.utc)
 
 
-def _write_batches(collection, operations: Iterable[ReplaceOne], batch_size: int) -> dict[str, int]:
+def _write_batches(collection, operations: Iterable[object], batch_size: int) -> dict[str, int]:
     """Bulk-upsert operations in bounded batches and aggregate MongoDB result counts."""
     inserted = 0
     updated = 0
@@ -84,7 +84,11 @@ def _observation_operations(rows, batch_loaded_at: datetime):
             "source": "batch",
             "batch_loaded_at": batch_loaded_at,
         }
-        yield ReplaceOne({"observation_id": document["observation_id"]}, document, upsert=True)
+        yield UpdateOne(
+            {"observation_id": document["observation_id"]},
+            {"$set": document},
+            upsert=True,
+        )
     if skipped:
         LOGGER.warning("Skipped %d Silver observations without an id", skipped)
 

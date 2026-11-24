@@ -6,7 +6,9 @@ import argparse
 import json
 import logging
 import os
+import sys
 from pathlib import Path
+from uuid import uuid4
 
 from pyspark.sql import DataFrame, SparkSession, functions as F
 from pyspark.sql.types import (
@@ -22,6 +24,12 @@ from pyspark.sql.types import (
 
 LOGGER = logging.getLogger(__name__)
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from src.streaming.realtime_aggregator import update_realtime_statistics
+
+
 DEFAULT_MAPPING = PROJECT_ROOT / "config" / "county_mapping.json"
 DEFAULT_CHECKPOINT = PROJECT_ROOT / "data" / "checkpoints" / "streaming"
 DEFAULT_DEAD_LETTER = PROJECT_ROOT / "data" / "bronze" / "dead_letters" / "streaming"
@@ -47,6 +55,19 @@ MESSAGE_SCHEMA = StructType(
         StructField("source", StringType(), True),
     ]
 )
+
+
+def load_or_create_stream_run_id(checkpoint_path: Path) -> str:
+    """Persist a run token alongside Spark offsets so foreachBatch retries stay idempotent."""
+    checkpoint_path.mkdir(parents=True, exist_ok=True)
+    run_id_path = checkpoint_path / "stream_run_id"
+    if run_id_path.exists():
+        stream_run_id = run_id_path.read_text(encoding="utf-8").strip()
+        if stream_run_id:
+            return stream_run_id
+    stream_run_id = uuid4().hex
+    run_id_path.write_text(stream_run_id, encoding="utf-8")
+    return stream_run_id
 
 
 def parse_args() -> argparse.Namespace:
@@ -147,7 +168,7 @@ def upsert_valid_batch(batch: DataFrame, batch_id: int, mongo_uri: str, database
             .option("connection.uri", mongo_uri)
             .option("database", database_name)
             .option("collection", "observations")
-            .option("operationType", "replace")
+            .option("operationType", "update")
             .option("idFieldList", "observation_id")
             .option("upsertDocument", "true")
             .option("maxBatchSize", "500")
@@ -165,6 +186,7 @@ def process_micro_batch(
     mongo_uri: str,
     database_name: str,
     dead_letter_output: Path,
+    stream_run_id: str,
 ) -> None:
     """Write rejected messages to a retry-safe dead-letter path and upsert valid rows."""
     parsed = parse_and_validate_messages(kafka_batch, aliases, canonical).persist()
@@ -184,8 +206,31 @@ def process_micro_batch(
             batch_path = dead_letter_output / f"batch_id={batch_id}"
             dead_letters.write.mode("overwrite").parquet(str(batch_path))
             LOGGER.warning("Kafka batch %d: wrote %d rejected messages to %s", batch_id, rejected_count, batch_path)
-        accepted_count = upsert_valid_batch(parsed, batch_id, mongo_uri, database_name)
-        LOGGER.info("Kafka batch %d complete: accepted=%d rejected=%d", batch_id, accepted_count, rejected_count)
+        accepted = (
+            parsed.filter(F.col("invalid_reason") == "")
+            .withColumn("_observation_id", F.col("event.id"))
+            .dropDuplicates(["_observation_id"])
+            .drop("_observation_id")
+            .persist()
+        )
+        try:
+            accepted_count = upsert_valid_batch(accepted, batch_id, mongo_uri, database_name)
+            realtime_stats = update_realtime_statistics(
+                accepted,
+                batch_id,
+                stream_run_id,
+                mongo_uri,
+                database_name,
+            )
+            LOGGER.info(
+                "Kafka batch %d complete: accepted=%d rejected=%d realtime_counties=%d",
+                batch_id,
+                accepted_count,
+                rejected_count,
+                realtime_stats["updated_counties"],
+            )
+        finally:
+            accepted.unpersist()
     finally:
         parsed.unpersist()
 
@@ -194,6 +239,8 @@ def main() -> None:
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s")
     args = parse_args()
     aliases, canonical = load_county_mapping(args.mapping.resolve())
+    checkpoint_path = args.checkpoint.resolve()
+    stream_run_id = load_or_create_stream_run_id(checkpoint_path)
     spark = create_spark_session()
     try:
         kafka_stream = (
@@ -213,9 +260,10 @@ def main() -> None:
                     args.mongo_uri,
                     args.database,
                     args.dead_letter_output.resolve(),
+                    stream_run_id,
                 )
             )
-            .option("checkpointLocation", str(args.checkpoint.resolve()))
+            .option("checkpointLocation", str(checkpoint_path))
             .trigger(processingTime=args.trigger_interval)
             .start()
         )
@@ -223,7 +271,7 @@ def main() -> None:
             "Streaming consumer started: broker=%s topic=%s checkpoint=%s trigger=%s",
             args.kafka_broker,
             args.topic,
-            args.checkpoint,
+            checkpoint_path,
             args.trigger_interval,
         )
         query.awaitTermination()
