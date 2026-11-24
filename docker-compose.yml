@@ -99,6 +99,8 @@ services:
       - SPARK_MASTER_PORT=7077
       - SPARK_MASTER_WEBUI_PORT=8080
       - SPARK_CONF_DIR=/opt/bitnami/spark/conf
+      - KAFKA_BROKER=kafka:29092
+      - KAFKA_TOPIC=butterfly-observations
       - MONGO_URI=mongodb://mongodb:27017
       - MONGO_DATABASE=bigdata
     ports:
