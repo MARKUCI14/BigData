@@ -23,17 +23,17 @@ flowchart LR
   subgraph Historical[Historical batch]
     IN[iNaturalist observations CSV] --> IB[Python ingestion]
     WX[Copernicus county temperature CSV] --> WB[Python ingestion]
-    IB --> B[(Bronze Parquet)]
+    IB --> B[(Bronze Parquet<br/>Data lake)]
     WB --> B
-    B --> SP[PySpark validation and standardization]
-    SP --> S[(Silver Parquet)]
-    S --> GP[PySpark monthly aggregation and analytics]
-    GP --> G[(Gold Parquet)]
-    G --> ML[MongoDB batch loader]
+    B --> SP[Apache Spark / PySpark<br/>validation and standardization]
+    SP --> S[(Silver Parquet<br/>Data lake)]
+    S --> GP[Apache Spark / PySpark<br/>monthly aggregation and analytics]
+    GP --> G[(Gold Parquet<br/>Data lake)]
+    G --> ML[Python MongoDB batch loader]
   end
   subgraph Realtime[Streaming observations]
-    SIM[Observation replay or simulator] --> K[Kafka: butterfly-observations]
-    K --> SS[Spark Structured Streaming]
+    SIM[Python observation replay or simulator] --> K[Apache Kafka<br/>butterfly-observations]
+    K --> SS[Apache Spark Structured Streaming]
     SS --> MR[(MongoDB observations and realtime_statistics)]
   end
   ML --> M[(MongoDB serving collections)]
@@ -42,6 +42,21 @@ flowchart LR
 ```
 
 The batch path processes historical sightings and climate data through Bronze, Silver, and Gold Parquet layers. The streaming path currently carries butterfly observation events; it is not a live weather feed. See the [detailed architecture and streaming flow](docs/architecture-diagram.md).
+
+### Streaming flow
+
+```mermaid
+flowchart LR
+  SOURCE[Observation CSV replay or synthetic events]
+  PRODUCER[Python Kafka producer<br/>JSON event keyed by county]
+  TOPIC[Apache Kafka<br/>butterfly-observations]
+  SPARK[Apache Spark Structured Streaming<br/>validation and aggregation]
+  MONGO[(MongoDB<br/>observations and realtime_statistics)]
+  DASH[Streamlit and Plotly<br/>Real-Time Monitoring]
+  SOURCE --> PRODUCER --> TOPIC --> SPARK --> MONGO --> DASH
+```
+
+This streaming path handles observation events and is shown separately in [architecture diagrams](docs/architecture-diagram.md).
 
 ## Technology stack
 
