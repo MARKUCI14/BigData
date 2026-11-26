@@ -97,10 +97,35 @@ class MongoDBClient:
 
         return self._retry(read)
 
-    def get_latest_observations(self, limit: int = 20) -> pd.DataFrame:
+    def get_latest_observations(
+        self,
+        limit: int = 20,
+        realtime_only: bool = False,
+        since: datetime | None = None,
+        counties: list[str] | None = None,
+    ) -> pd.DataFrame:
+        """Return newest observations, optionally limited to streaming events and filters."""
         if limit < 0:
             raise ValueError("limit must be non-negative")
-        return self._frame("observations", {}, [("observed_on", -1)], limit)
+        query: dict[str, Any] = {}
+        if realtime_only:
+            query["realtime_counted"] = True
+        if since is not None:
+            query["timestamp"] = {"$gte": since}
+        if counties:
+            query["county"] = {"$in": counties}
+        sort_field = "timestamp" if realtime_only or since is not None else "observed_on"
+        return self._frame("observations", query, [(sort_field, -1)], limit)
+
+    def count_stream_observations(self, since: datetime | None = None,
+                                  counties: list[str] | None = None) -> int:
+        """Count first-seen streaming observations, optionally since a UTC time."""
+        query: dict[str, Any] = {"realtime_counted": True}
+        if since is not None:
+            query["timestamp"] = {"$gte": since}
+        if counties:
+            query["county"] = {"$in": counties}
+        return self._retry(lambda: self._database["observations"].count_documents(query))
 
     def get_observation_count_by_county(self) -> pd.DataFrame:
         def aggregate():

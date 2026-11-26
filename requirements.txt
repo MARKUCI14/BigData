@@ -1,7 +1,7 @@
 pyspark
 kafka-python
 pymongo
-streamlit
+streamlit>=1.37
 plotly
 pandas
 requests

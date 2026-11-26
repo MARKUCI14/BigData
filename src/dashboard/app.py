@@ -12,11 +12,13 @@ try:
     from src.dashboard.pages.historical_analysis import render as render_historical_analysis
     from src.dashboard.pages.temperature_analysis import render as render_temperature_analysis
     from src.dashboard.pages.correlation_analysis import render as render_correlation_analysis
+    from src.dashboard.pages.realtime_monitoring import render as render_realtime_monitoring
 except ModuleNotFoundError:  # Docker image can also expose storage as a top-level package.
     from storage.mongodb_client import MongoDBClient
     from dashboard.pages.historical_analysis import render as render_historical_analysis
     from dashboard.pages.temperature_analysis import render as render_temperature_analysis
     from dashboard.pages.correlation_analysis import render as render_correlation_analysis
+    from dashboard.pages.realtime_monitoring import render as render_realtime_monitoring
 
 
 PAGES = (
@@ -105,6 +107,11 @@ elif selected_page == PAGES[2] and client is not None:
         render_correlation_analysis(client, st.session_state["dashboard_filters"])
     except Exception as exc:
         st.error(f"Could not load correlation analysis: {exc}")
+elif selected_page == PAGES[3] and client is not None:
+    try:
+        render_realtime_monitoring(client, st.session_state["dashboard_filters"])
+    except Exception as exc:
+        st.error(f"Could not load real-time monitoring: {exc}")
 else:
     st.info(
         "Choose a dashboard section from the sidebar. Its analysis view will use the "
