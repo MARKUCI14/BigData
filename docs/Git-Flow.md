@@ -9,6 +9,12 @@
 
 For step-by-step commands, validation guidance, and PR templates, see [Development Process](dev-guide/development-process.md).
 
+## GitHub branch protection
+
+Classic branch protection rules are active for `main`, `develop`, and `test`. Each requires pull requests, one approval, dismissal of stale approvals after new commits, approval of the latest reviewable push by someone other than its author, and resolved review conversations. Force pushes and branch deletion are disabled. No required status checks are configured because the repository does not yet have established CI checks.
+
+These protections require reviewed PRs but do not enforce the source branch of a PR. Authors and reviewers must follow the documented route: feature to `test`, feature to `develop` after validation, then `develop` to `main` for a release. GitHub's **Branches** settings page shows the active rules.
+
 ## Feature workflow
 
 1. Create `feature/<issue-number>` from the latest `develop`.

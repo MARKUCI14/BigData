@@ -11,7 +11,9 @@ This guide describes how we take an issue from the project board to a reviewed c
 | `test` | Shared validation branch used before a feature is integrated into `develop`. |
 | `feature/<issue>-<short-name>` | Isolated implementation for one issue, created from current `develop`. |
 
-At the time this guide was written, `test` points to the initial commit while `develop` contains later work. A maintainer must first bring `test` up to date with `develop` (preferably through a reviewed PR from `develop` into `test`). Until then, a feature PR against `test` will include unrelated history and the test gate is not ready to use. Do not force-push or reset the shared `test` branch to solve this locally.
+GitHub classic branch protection is active on `main`, `develop`, and `test`. Each requires a PR and one approval, dismisses stale approvals on new commits, requires approval of the latest reviewable push by another person, and requires review conversations to be resolved. Force pushes and deletions are disabled. These rules protect each destination branch, but do not technically block a PR from taking an incorrect source branch; select the base branch carefully. No CI status check is required yet.
+
+At the time this guide was written, `test` points to the initial commit while `develop` contains later work. A maintainer must first bring `test` up to date with `develop` through a reviewed PR from `develop` into `test`. The active rules require an approval for that PR. Until the sync is merged, a feature PR against `test` will include unrelated history and the test gate is not ready to use. Do not force-push or reset the shared `test` branch to solve this locally.
 
 ## Start an issue
 
