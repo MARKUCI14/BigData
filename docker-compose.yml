@@ -11,7 +11,7 @@ services:
     networks:
       - bigdata-net
     healthcheck:
-      test: ["CMD-SHELL", "echo ruok | nc localhost 2181 | grep imok"]
+      test: ["CMD-SHELL", "echo srvr | nc -w 2 localhost 2181 | grep -q Mode"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -60,17 +60,18 @@ services:
     environment:
       KAFKA_TOPIC: ${KAFKA_TOPIC:-butterfly-observations}
     entrypoint: ["/bin/bash", "-c"]
-    command: |
-      set -e
-      echo "Creating Kafka topic: $${KAFKA_TOPIC}..."
-      kafka-topics --create --if-not-exists \
-        --bootstrap-server kafka:29092 \
-        --topic "$${KAFKA_TOPIC}" \
-        --partitions 3 \
-        --replication-factor 1 \
-        --config retention.ms=604800000
-      echo 'Topic created successfully.'
-      kafka-topics --describe --bootstrap-server kafka:29092 --topic "$${KAFKA_TOPIC}"
+    command:
+      - |
+        set -e
+        echo "Creating Kafka topic: $${KAFKA_TOPIC}..."
+        kafka-topics --create --if-not-exists \
+          --bootstrap-server kafka:29092 \
+          --topic "$${KAFKA_TOPIC}" \
+          --partitions 3 \
+          --replication-factor 1 \
+          --config retention.ms=604800000
+        echo 'Topic created successfully.'
+        kafka-topics --describe --bootstrap-server kafka:29092 --topic "$${KAFKA_TOPIC}"
     networks:
       - bigdata-net
 
