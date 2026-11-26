@@ -62,8 +62,8 @@ The diagram shows the intended architecture and marks the Kafka topic name curre
 | Spark batch | Distributed processing engine for historical cleaning, joins, aggregations, and analytics. | Pipeline stages exist; end-to-end execution remains unverified. |
 | Spark Structured Streaming | Reads Kafka events in micro-batches, validates them, and updates low-latency outputs. | Consumer handles observation events, dead letters, checkpoints, and MongoDB upserts. |
 | MongoDB | Document serving store for recent records and precomputed summaries used by the dashboard. | Initialization and storage modules exist; collection schema is documented in the data model. |
-| Streamlit | User-facing dashboard for historical and near-real-time results. | The current app is a placeholder and does not yet show analytical pages. |
-| Docker Compose | Local orchestration for infrastructure and application services. | Configuration exists, but startup is blocked by the unavailable `bitnami/spark:3.5` image tag. |
+| Streamlit | User-facing dashboard for historical and near-real-time results. | Historical, temperature, correlation, and realtime pages are implemented. |
+| Docker Compose | Local orchestration for infrastructure and application services. | Service configuration exists; a successful full-stack run still needs validation on the target machine. |
 
 ## Data flow definitions
 
@@ -79,7 +79,7 @@ The diagram shows the intended architecture and marks the Kafka topic name curre
 
 ### Near-real-time flow
 
-The target design accepts incoming weather events from a Weather API or a realistic simulation, publishes them to Kafka, processes them with Spark Structured Streaming, and exposes recent results through MongoDB and the dashboard. The current code instead publishes butterfly observation events. Until that source and contract are aligned, the implemented stream is a technical demonstration and does not meet the weather-stream description in the proposal and diagram.
+The implemented stream publishes butterfly observation events through Kafka and Spark Structured Streaming, then exposes recent results through MongoDB and the Streamlit Real-Time Monitoring page. The proposal's weather-event stream remains an architecture gap until its source and contract are aligned.
 
 ## Architecture boundaries
 
