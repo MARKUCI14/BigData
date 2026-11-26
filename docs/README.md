@@ -11,6 +11,10 @@ This documentation defines the Clouded Apollo analytics platform, explains how i
 | [Batch pipeline](pipelines/batch-pipeline.md) | Bronze, Silver, and Gold processing for historical data |
 | [Streaming pipeline](pipelines/streaming-pipeline.md) | Kafka producer, Spark consumer, validation, and MongoDB writes |
 | [Architecture decisions](architecture/) | Reasons for the selected storage, processing, event, serving, and deployment patterns |
+| [Development process](dev-guide/development-process.md) | Issue-to-PR steps, branch workflow, validation, and release process |
+| [Commit message template](templates/commit-message.txt) | Optional Git commit template |
+| [GitHub pull request template](../.github/PULL_REQUEST_TEMPLATE.md) | Automatically suggested PR description |
+| [GitHub issue templates](../.github/ISSUE_TEMPLATE/) | Feature/task and bug report forms |
 | [Kafka configuration](kafka-config.md) | Topic, message transport, and connection details |
 | [Spark configuration](spark-config.md) | Cluster configuration and connector packages |
 | [Git flow](Git-Flow.md) | Branch and integration workflow |

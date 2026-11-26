@@ -7,6 +7,8 @@
 - `test` is the shared branch for testing a feature before it is integrated into `develop`.
 - `main` is the main branch with all done features in reached milestone release.
 
+For step-by-step commands, validation guidance, and PR templates, see [Development Process](dev-guide/development-process.md).
+
 ## Feature workflow
 
 1. Create `feature/<issue-number>` from the latest `develop`.
@@ -26,3 +28,5 @@ Do not merge directly into `develop` before the feature has been accepted on `te
 ## Commit
 
 Please use this commit structure: `Refs #<commitNumber>: Commit message`.
+
+Configure `docs/templates/commit-message.txt` with `git config --local commit.template docs/templates/commit-message.txt` to prefill a commit message. GitHub PRs use [.github/PULL_REQUEST_TEMPLATE.md](../.github/PULL_REQUEST_TEMPLATE.md).
