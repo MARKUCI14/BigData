@@ -4,14 +4,14 @@
 
 ## Issue
 
-Refs #
+Closes #N
 
 ## Change type
 
-- [ ] Feature
-- [ ] Bug fix
-- [ ] Documentation
-- [ ] Maintenance / refactor
+- Feature
+- Bug fix
+- Documentation
+- Maintenance / refactor
 
 ## Implementation notes
 
@@ -36,5 +36,8 @@ Refs #
 - [ ] I ran relevant checks and recorded their actual results above.
 - [ ] I updated documentation or configuration affected by this change.
 - [ ] I checked whether the proposal/architecture and implementation remain aligned.
-- [ ] I selected the intended base branch (`test` for validation, `develop` for integration, `main` for a release).
+- [ ] I selected the intended base branch (`develop` for feature integration, `main` for a deployment release).
+
+<!-- GitHub loads this template from the PR's base branch. Keep this file on both
+develop and main so it appears for feature and release PRs. -->
 
