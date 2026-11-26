@@ -10,14 +10,20 @@
 | Worker Memory | 2g |
 | Worker Cores | 2 |
 
+## Docker image
+
+Compose builds one local image, `clouded-apollo-spark:3.5.9`, for both the master and worker. Its base is the Docker Official Image `spark:3.5.9-scala2.12-java17-python3-ubuntu`; the custom layer installs PyMongo for streaming writes. The Spark master and worker use `/opt/spark` as `SPARK_HOME` and mount the repository data directory at `/opt/spark/data`.
+
 ## Required Packages
 
 The following Spark packages must be included via `--packages` when submitting jobs:
 
 ```
-org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.3
+org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.9
 org.mongodb.spark:mongo-spark-connector_2.12:10.2.1
 ```
+
+The Kafka connector version matches Spark 3.5.9. The packages are listed in `config/spark-defaults.conf`, which Compose mounts into both Spark containers. The streaming consumer also sets the same package coordinates in its Spark session.
 
 ## spark-submit Examples
 
@@ -25,23 +31,22 @@ org.mongodb.spark:mongo-spark-connector_2.12:10.2.1
 ```bash
 spark-submit \
   --master spark://localhost:7077 \
-  --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.3,org.mongodb.spark:mongo-spark-connector_2.12:10.2.1 \
+  --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.9,org.mongodb.spark:mongo-spark-connector_2.12:10.2.1 \
   src/processing/run_batch_pipeline.py --stages all
 ```
 
 ### Batch Processing (from Docker)
 ```bash
-docker exec spark-master spark-submit \
+docker compose exec spark-master /opt/spark/bin/spark-submit \
   --master spark://spark-master:7077 \
-  --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.3,org.mongodb.spark:mongo-spark-connector_2.12:10.2.1 \
-  /opt/bitnami/spark/src/processing/run_batch_pipeline.py --stages all
+  /opt/spark/src/processing/run_batch_pipeline.py --stages all
 ```
 
 ### Streaming Job
 ```bash
 spark-submit \
   --master spark://localhost:7077 \
-  --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.3,org.mongodb.spark:mongo-spark-connector_2.12:10.2.1 \
+  --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.9,org.mongodb.spark:mongo-spark-connector_2.12:10.2.1 \
   src/streaming/stream_processor.py
 ```
 
@@ -49,7 +54,7 @@ spark-submit \
 
 | Layer | Path |
 |-------|------|
-| Raw | `/opt/bitnami/spark/data/raw/` |
-| Bronze | `/opt/bitnami/spark/data/bronze/` |
-| Silver | `/opt/bitnami/spark/data/silver/` |
-| Gold | `/opt/bitnami/spark/data/gold/` |
+| Raw | `/opt/spark/data/raw/` |
+| Bronze | `/opt/spark/data/bronze/` |
+| Silver | `/opt/spark/data/silver/` |
+| Gold | `/opt/spark/data/gold/` |

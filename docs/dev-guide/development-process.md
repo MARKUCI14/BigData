@@ -101,7 +101,7 @@ When a milestone is ready, open a PR from `develop` into `main`. Review the mile
 
 ## Current project checks and limits
 
-- `docker compose up --build` currently stops because `bitnami/spark:3.5` cannot be pulled. Do not report Docker-based acceptance checks as passed until the Spark image reference is corrected and the services start.
+- Compose uses `spark:3.5.9-scala2.12-java17-python3-ubuntu` as the shared Spark master/worker base image. Do not report Docker-based acceptance checks as passed until the images build and the services start healthy on the target machine.
 - Compose configures infrastructure but does not submit the batch or streaming Spark jobs automatically. Consult [batch pipeline](../pipelines/batch-pipeline.md) and [streaming pipeline](../pipelines/streaming-pipeline.md) for execution steps.
 - The proposal's live source is weather data, while the current Kafka code streams butterfly observations. PRs touching streaming should state which contract they implement and whether they close this architecture gap.
 

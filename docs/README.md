@@ -28,7 +28,7 @@ This documentation defines the Clouded Apollo analytics platform, explains how i
 - **Implemented** means corresponding code or configuration exists in this repository. It does not mean the component has passed an end-to-end run.
 - **Gap** means the current implementation differs from the target or still needs verification.
 
-The Docker Compose stack and dashboard pages are implemented. A Compose definition documents configuration; it does not by itself establish that all images build or services pass a live end-to-end run. Validate the stack on the target machine before a demonstration. The Kafka stream currently carries butterfly observations; the proposal's weather-event stream remains an architecture gap.
+The Docker Compose stack and dashboard pages are implemented. The shared Spark master/worker image is based on the Docker Official Image `spark:3.5.9-scala2.12-java17-python3-ubuntu`. A Compose definition documents configuration; it does not by itself establish that all images build or services pass a live end-to-end run. Validate the stack on the target machine before a demonstration. The Kafka stream currently carries butterfly observations; the proposal's weather-event stream remains an architecture gap.
 
 For project setup, team details, data sources, pipeline stages, and limitations, see the [main README](../README.md). The [architecture diagrams](architecture-diagram.md) and [data dictionary](data-dictionary.md) provide the system flow and processing-layer field definitions.
 

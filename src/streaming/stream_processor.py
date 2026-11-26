@@ -39,7 +39,7 @@ DEFAULT_MONGO_URI = "mongodb://localhost:27017"
 DEFAULT_DATABASE = "bigdata"
 TRIGGER_INTERVAL = "10 seconds"
 SPARK_PACKAGES = (
-    "org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.3,"
+    "org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.9,"
     "org.mongodb.spark:mongo-spark-connector_2.12:10.2.1"
 )
 LATITUDE_RANGE = (43.5, 48.5)

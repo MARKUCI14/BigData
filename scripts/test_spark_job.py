@@ -15,7 +15,7 @@ def main():
         SparkSession.builder
         .appName("TestSparkJob")
         .config("spark.jars.packages",
-                "org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.3,"
+                "org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.9,"
                 "org.mongodb.spark:mongo-spark-connector_2.12:10.2.1")
         .getOrCreate()
     )
@@ -38,7 +38,7 @@ def main():
 
     if not os.path.exists(csv_path):
         # Try Docker path
-        csv_path = "/opt/bitnami/spark/data/raw/Parnassius_obs_cleaned.csv"
+        csv_path = "/opt/spark/data/raw/Parnassius_obs_cleaned.csv"
 
     try:
         df = spark.read.csv(csv_path, header=True, inferSchema=True)

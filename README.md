@@ -68,7 +68,7 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Copy `.env.example` to `.env` and adjust the settings for the services you use. The example uses host addresses for scripts run directly on your computer. Processes running inside the Docker Compose network need service names instead: `kafka:29092`, `mongodb:27017`, and `spark-master:7077`. These are examples of values to set in the environment for those processes; Compose currently configures its containers directly and does not load `.env` as an `env_file`.
+Copy `.env.example` to `.env` and adjust the settings for the services you use. The example uses host addresses for scripts run directly on your computer. Compose reads `KAFKA_TOPIC`, `MONGO_DATABASE`, and `STREAMLIT_PORT` from `.env`; its containers use Docker-network addresses (`kafka:29092`, `mongodb:27017`, and `spark-master:7077`) configured in `docker-compose.yml`.
 
 Use the source CSV files in `data/raw/` as inputs. Generated Parquet outputs go in `data/bronze/`, `data/silver/`, and `data/gold/`; those generated files are excluded from Git.
 
@@ -106,15 +106,31 @@ pip install -r requirements.txt
 cp .env.example .env
 ```
 
-Start the services and run the historical batch pipeline:
+Start the full local stack:
 
 ```bash
-docker compose up --build -d
-docker compose ps
-spark-submit src/processing/run_batch_pipeline.py --stages all
+docker compose up --build
 ```
 
-The Compose file describes the Kafka, Spark, MongoDB, and Streamlit services. Verify that all images build and services become healthy in your Docker environment before running the pipeline. The dashboard is served at [http://localhost:8501](http://localhost:8501). Spark UI is at [http://localhost:8080](http://localhost:8080), and MongoDB is available at `mongodb://localhost:27017`.
+Compose builds the Spark and Streamlit images, starts the services on `bigdata-net`, creates the `butterfly-observations` topic after Kafka is healthy, and initializes MongoDB collections on the first database start. The topic and database name can be changed with `KAFKA_TOPIC` and `MONGO_DATABASE` in `.env`.
+
+Once the services report healthy, the dashboard is available at [http://localhost:8501](http://localhost:8501), the Spark Master UI at [http://localhost:8080](http://localhost:8080), and MongoDB at `mongodb://localhost:27017`. Spark workers mount `data/` at `/opt/spark/data`; the connector packages are configured in `config/spark-defaults.conf`.
+
+To run the historical batch pipeline from the Spark master container:
+
+```bash
+docker compose exec spark-master /opt/spark/bin/spark-submit \
+  --master spark://spark-master:7077 \
+  /opt/spark/src/processing/run_batch_pipeline.py --stages all
+```
+
+To inspect service status:
+
+```bash
+docker compose ps
+```
+
+The Compose stack is configured for local development; verify that images build and services become healthy in your Docker environment before relying on it for a demonstration.
 
 To send a finite replay of source observations to Kafka, run:
 

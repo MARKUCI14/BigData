@@ -2,6 +2,8 @@
 
 ## Topic: butterfly-observations
 
+Compose creates `butterfly-observations` by default after Kafka becomes healthy. Set `KAFKA_TOPIC` in the root `.env` file to use a different topic; the Kafka initializer and application containers receive the same value.
+
 | Property | Value |
 |----------|-------|
 | Topic Name | `butterfly-observations` |

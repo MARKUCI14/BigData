@@ -63,7 +63,7 @@ The diagram shows the intended architecture and marks the Kafka topic name curre
 | Spark Structured Streaming | Reads Kafka events in micro-batches, validates them, and updates low-latency outputs. | Consumer handles observation events, dead letters, checkpoints, and MongoDB upserts. |
 | MongoDB | Document serving store for recent records and precomputed summaries used by the dashboard. | Initialization and storage modules exist; collection schema is documented in the data model. |
 | Streamlit | User-facing dashboard for historical and near-real-time results. | Historical, temperature, correlation, and realtime pages are implemented. |
-| Docker Compose | Local orchestration for infrastructure and application services. | Service configuration exists; a successful full-stack run still needs validation on the target machine. |
+| Docker Compose | Local orchestration for infrastructure and application services. | `docker-compose.yml` defines a shared network, persistent Kafka/MongoDB volumes, Kafka topic initialization, health checks, and a shared Spark 3.5.9 image; a successful full-stack run still needs validation on the target machine. |
 
 ## Data flow definitions
 

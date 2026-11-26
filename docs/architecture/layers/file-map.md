@@ -15,7 +15,7 @@ This map connects the project's architecture layers to their current repository 
 | Dashboard | `src/dashboard/` | Streamlit application. |
 | Application configuration | `config/` | County mapping and Spark defaults. |
 | Container definitions | `docker/` | Custom Spark and Streamlit images and MongoDB initialization. |
-| Local orchestration | `docker-compose.yml` | Local Kafka, Spark, MongoDB, and dashboard services. |
+| Local orchestration | `docker-compose.yml` | Kafka, Spark, MongoDB, and dashboard services on `bigdata-net`, with named data volumes and health checks. |
 | Utility scripts | `scripts/` | Repository helper scripts. |
 | Tests | `tests/` | Unit and integration test suite. |
 | Project documentation | `docs/` | Architecture, data model, pipeline, configuration, and development guides. |
