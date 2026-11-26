@@ -118,12 +118,12 @@ def render(client: Any, filters: dict[str, Any]) -> None:
                     "latitude", "longitude"
                 }.issubset(feed.columns) else pd.DataFrame()
                 if not map_data.empty:
-                    live_map = px.scatter_mapbox(
+                    live_map = px.scatter_map(
                         map_data, lat="latitude", lon="longitude", color="county",
                         hover_name="county",
                         hover_data=[column for column in ("observation_id", "timestamp") if column in map_data],
                         center={"lat": 45.9, "lon": 25.0}, zoom=5,
-                        mapbox_style="open-street-map", title="Recent Streaming Locations",
+                        map_style="open-street-map", title="Recent Streaming Locations",
                     )
                     live_map.update_layout(margin={"r": 0, "t": 45, "l": 0, "b": 0})
                     st.plotly_chart(live_map, use_container_width=True)

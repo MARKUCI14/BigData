@@ -77,7 +77,7 @@ def render(client: Any, filters: dict[str, Any]) -> None:
         coordinates["longitude"] = pd.to_numeric(coordinates["longitude"], errors="coerce")
         coordinates = coordinates.dropna(subset=["latitude", "longitude"])
     if not coordinates.empty:
-        map_chart = px.scatter_mapbox(
+        map_chart = px.scatter_map(
             coordinates,
             lat="latitude",
             lon="longitude",
@@ -86,7 +86,7 @@ def render(client: Any, filters: dict[str, Any]) -> None:
             hover_data=[column for column in ("observation_id", "observed_on") if column in coordinates],
             zoom=5,
             center={"lat": 45.9, "lon": 25.0},
-            mapbox_style="open-street-map",
+            map_style="open-street-map",
             title="Observation Locations",
         )
         map_chart.update_layout(margin={"r": 0, "t": 45, "l": 0, "b": 0})
