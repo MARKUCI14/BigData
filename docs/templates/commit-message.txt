@@ -1,0 +1,12 @@
+Refs #<issue-number>: <imperative summary in sentence case>
+
+Why:
+<What problem does this change solve?>
+
+Changes:
+- <Important implementation change>
+- <Important implementation change>
+
+Checks:
+- <Command or manual check and its result>
+- <Any check that could not be run and why>

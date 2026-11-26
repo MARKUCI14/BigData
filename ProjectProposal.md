@@ -1,5 +1,7 @@
-The effect of the environmental temperature on the Clouded Apollo
-(Parnassius mnemosyne) population size in Romania
+# The effect of environmental temperature on the Clouded Apollo population size in Romania
+
+This file records the preliminary proposal. For the current repository architecture, data contracts, and differences between the proposal and implemented code, see [Architecture.md](Architecture.md) and the [documentation index](docs/README.md).
+
 The worldwide decline of the native insect population size started to become an ecological
 problem more than half a century ago. Some insect groups are more sensitive than others, such as
 the hoverfly (Syrphidae) and bumblebee (Bombus) families or the Lepidoptera order, which includes
