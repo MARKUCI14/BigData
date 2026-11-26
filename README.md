@@ -4,6 +4,7 @@ This project explores how monthly county-level temperature relates to recorded s
 
 **Research question:** How are reported Clouded Apollo observations associated with environmental temperature across Romanian counties and months?
 
+<<<<<<< HEAD
 Reported sightings are not population estimates. Observer effort and reporting bias affect the records, and correlation does not establish causation.
 
 ## Team
@@ -57,6 +58,19 @@ flowchart LR
 ```
 
 This streaming path handles observation events and is shown separately in [architecture diagrams](docs/architecture-diagram.md).
+=======
+From the repository root, create a virtual environment and install the Python dependencies:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+Copy `.env.example` to `.env` and adjust the settings for the services you use. The example uses host addresses for scripts run directly on your computer. Processes running inside the Docker Compose network need service names instead: `kafka:29092`, `mongodb:27017`, and `spark-master:7077`. These are examples of values to set in the environment for those processes; Compose currently configures its containers directly and does not load `.env` as an `env_file`.
+
+Use the source CSV files in `data/raw/` as inputs. Generated Parquet outputs go in `data/bronze/`, `data/silver/`, and `data/gold/`; those generated files are excluded from Git.
+>>>>>>> 74e28ca6728df59b28408228db6a994646ed492b
 
 ## Technology stack
 
@@ -73,7 +87,11 @@ This streaming path handles observation events and is shown separately in [archi
 
 Dependency versions are specified in [requirements.txt](requirements.txt); test-only dependencies are in [requirements-dev.txt](requirements-dev.txt).
 
+<<<<<<< HEAD
 ## Prerequisites
+=======
+See [Architecture.md](Architecture.md) for the system summary, [docs/architecture/layers/file-map.md](docs/architecture/layers/file-map.md) for the repository layout, and [docs/README.md](docs/README.md) for component definitions, data contracts, pipeline descriptions, and architecture decisions. The proposal and diagram describe a weather-event stream; the current Kafka implementation streams butterfly observation events. This mismatch is documented as work to resolve. The Streamlit app is currently a placeholder, and the Docker stack has not yet been verified because the configured Spark image tag cannot be pulled.
+>>>>>>> 74e28ca6728df59b28408228db6a994646ed492b
 
 - Python 3.11 or newer
 - Docker Desktop or Docker Engine with the Docker Compose plugin
@@ -182,4 +200,4 @@ The dashboard contains Historical Analysis, Temperature Analysis, Correlation An
 
 ## Further documentation
 
-Start at the [documentation index](docs/README.md) for architecture decisions, component contracts, pipeline details, MongoDB schema, and the Git workflow.
+Start at the [documentation index](docs/README.md) for architecture decisions, component contracts, pipeline details, MongoDB schema, presentation notes, and the Git workflow.

@@ -10,6 +10,7 @@ This documentation defines the Clouded Apollo analytics platform, explains how i
 | [Data model](data-model.md) | Historical records, Kafka events, analytical outputs, and MongoDB collections |
 | [Architecture diagrams](architecture-diagram.md) | Batch and streaming flow diagrams |
 | [Data dictionary](data-dictionary.md) | Field definitions across Bronze, Silver, and Gold |
+| [Presentation notes](presentation-notes.md) | Five-minute outline, demo sequence, and anticipated questions |
 | [Batch pipeline](pipelines/batch-pipeline.md) | Bronze, Silver, and Gold processing for historical data |
 | [Streaming pipeline](pipelines/streaming-pipeline.md) | Kafka producer, Spark consumer, validation, and MongoDB writes |
 | [Architecture decisions](architecture/) | Reasons for the selected storage, processing, event, serving, and deployment patterns |
