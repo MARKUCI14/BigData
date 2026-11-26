@@ -169,6 +169,32 @@ services:
       timeout: 10s
       retries: 5
 
+  # --- Seed batch data when MongoDB serving collections are empty ---
+  mongodb-seed:
+    image: clouded-apollo-spark:3.5.3
+    container_name: mongodb-seed
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      spark-master:
+        condition: service_healthy
+      spark-worker:
+        condition: service_healthy
+    environment:
+      MONGO_URI: mongodb://mongodb:27017
+      MONGO_DATABASE: bigdata
+      SPARK_CONF_DIR: /opt/spark/conf
+      PYTHONPATH: /opt/spark/app
+    volumes:
+      - ./data:/opt/spark/app/data
+      - ./src:/opt/spark/app/src
+      - ./scripts:/opt/spark/app/scripts
+      - ./config:/opt/spark/app/config
+    entrypoint: ["python3", "/opt/spark/app/scripts/seed_mongodb.py"]
+    networks:
+      - bigdata-net
+    restart: "no"
+
   # --- Streamlit Dashboard ---
   streamlit:
     build:
@@ -176,8 +202,8 @@ services:
       dockerfile: docker/streamlit/Dockerfile
     container_name: streamlit
     depends_on:
-      mongodb:
-        condition: service_healthy
+      mongodb-seed:
+        condition: service_completed_successfully
     ports:
       - "8501:8501"
     environment:

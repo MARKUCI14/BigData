@@ -45,6 +45,12 @@ def read_and_validate_header(source: Path) -> list[str]:
     return header
 
 
+def _column_ref(name: str) -> F.Column:
+    """Reference a source column literally, including names containing dots."""
+    escaped = name.replace("`", "``")
+    return F.col(f"`{escaped}`")
+
+
 def ingest_temperatures(
     spark: SparkSession,
     source: Path,
@@ -72,20 +78,22 @@ def ingest_temperatures(
     prepared = raw.drop(index_column)
     invalid_counts = []
     for position, column in enumerate(monthly_columns):
-        source_value = F.lower(F.trim(F.col(column)))
+        source_column = _column_ref(column)
+        source_value = F.lower(F.trim(source_column))
         missing = source_value.isNull() | source_value.isin(*MISSING_TEMPERATURES)
         invalid_counts.append(
-            F.sum(F.when(~missing & F.col(column).cast("double").isNull(), 1).otherwise(0)).alias(f"invalid_{position}")
+            F.sum(F.when(~missing & source_column.cast("double").isNull(), 1).otherwise(0)).alias(f"invalid_{position}")
         )
 
     invalid_row = prepared.agg(*invalid_counts).first()
     invalid_values = sum(value or 0 for value in invalid_row)
     for column in monthly_columns:
-        source_value = F.lower(F.trim(F.col(column)))
+        source_column = _column_ref(column)
+        source_value = F.lower(F.trim(source_column))
         missing = source_value.isNull() | source_value.isin(*MISSING_TEMPERATURES)
         prepared = prepared.withColumn(
             column,
-            F.when(missing, F.lit(None).cast("double")).otherwise(F.col(column).cast("double")),
+            F.when(missing, F.lit(None).cast("double")).otherwise(source_column.cast("double")),
         )
 
     if invalid_values:

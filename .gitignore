@@ -222,12 +222,9 @@ __marimo__/
 # === Project-specific ===
 
 # Data Lake layers (generated Parquet files)
-data/bronze/
-data/silver/
-data/gold/
-!data/bronze/
-!data/silver/
-!data/gold/
+data/bronze/*
+data/silver/*
+data/gold/*
 
 # Spark checkpoints
 data/checkpoints/

@@ -26,6 +26,8 @@ From the repository root, after dependencies and a Spark runtime are available:
 spark-submit src/processing/run_batch_pipeline.py --stages all
 ```
 
+Docker Compose also runs `scripts/seed_mongodb.py` after MongoDB and Spark become healthy. It runs the batch pipeline and loads the bundled raw CSV data when any of the MongoDB serving collections (`observations`, `monthly_statistics`, or `correlations`) is empty. It skips the load when all three already contain data. To explicitly rebuild the derived files and reload MongoDB, run `docker compose run --rm mongodb-seed --force`.
+
 The orchestrator supports `all`, `ingest`, `bronze-to-silver`, and `silver-to-gold` stage groups, plus `--force`, `--continue-on-error`, and `--dry-run`. Review `docs/spark-config.md` for cluster and connector configuration.
 
 ## Data quality and interpretation

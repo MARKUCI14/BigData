@@ -116,6 +116,8 @@ spark-submit src/processing/run_batch_pipeline.py --stages all
 
 The Compose file describes the Kafka, Spark, MongoDB, and Streamlit services. Verify that all images build and services become healthy in your Docker environment before running the pipeline. The dashboard is served at [http://localhost:8501](http://localhost:8501). Spark UI is at [http://localhost:8080](http://localhost:8080), and MongoDB is available at `mongodb://localhost:27017`.
 
+On first startup, Compose waits for MongoDB and Spark, then runs the bundled batch pipeline if the MongoDB `observations`, `monthly_statistics`, or `correlations` collections are empty. The dashboard waits for this seed job to finish. Existing batch data is left in place; to explicitly reload it from the checked-in CSV sources, run `docker compose run --rm mongodb-seed --force`. MongoDB data persists in its named volume across `docker compose down` and normal rebuilds. `docker compose down --volumes` deletes that data, after which the next startup seeds it again.
+
 To send a finite replay of source observations to Kafka, run:
 
 ```bash
