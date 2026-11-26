@@ -22,6 +22,10 @@ This project combines historical Clouded Apollo (*Parnassius mnemosyne*) observa
 | Visualization | Streamlit | Interactive analytical dashboard |
 | Containerization | Docker Compose | Deploy and connect |
 
+## Architecture and documentation
+
+See [Architecture.md](Architecture.md) for the system summary and [docs/README.md](docs/README.md) for component definitions, data contracts, pipeline descriptions, and architecture decisions. The proposal and diagram describe a weather-event stream; the current Kafka implementation streams butterfly observation events. This mismatch is documented as work to resolve. The Streamlit app is currently a placeholder, and the Docker stack has not yet been verified because the configured Spark image tag cannot be pulled.
+
 ## Start the infrastructure
 
 Install Docker Desktop with Docker Compose, then run the following command from the repository root:
@@ -30,7 +34,7 @@ Install Docker Desktop with Docker Compose, then run the following command from 
 docker compose up --build
 ```
 
-Compose starts Zookeeper, Kafka, Spark, MongoDB, and the Streamlit dashboard. It also creates the `butterfly-observations` Kafka topic and initializes the MongoDB collections on the first database start. The services are available at:
+Compose is configured to start Zookeeper, Kafka, Spark, MongoDB, and the Streamlit dashboard. It also creates the `butterfly-observations` Kafka topic and initializes the MongoDB collections on the first database start. This command currently stops before startup because `bitnami/spark:3.5` cannot be pulled; correct the Spark image reference first. Compose does not automatically submit the historical batch or streaming Spark jobs. Once the services are running, their host addresses are:
 
 | Service | Address |
 |---------|---------|
