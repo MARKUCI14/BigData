@@ -9,8 +9,10 @@ import streamlit as st
 
 try:
     from src.storage.mongodb_client import MongoDBClient
+    from src.dashboard.pages.historical_analysis import render as render_historical_analysis
 except ModuleNotFoundError:  # Docker image can also expose storage as a top-level package.
     from storage.mongodb_client import MongoDBClient
+    from dashboard.pages.historical_analysis import render as render_historical_analysis
 
 
 PAGES = (
@@ -84,6 +86,11 @@ if connection_error:
     )
 elif client is not None and not counties:
     st.info("MongoDB is connected, but no observation data is available yet.")
+elif selected_page == PAGES[0] and client is not None:
+    try:
+        render_historical_analysis(client, st.session_state["dashboard_filters"])
+    except Exception as exc:
+        st.error(f"Could not load historical analysis: {exc}")
 else:
     st.info(
         "Choose a dashboard section from the sidebar. Its analysis view will use the "
