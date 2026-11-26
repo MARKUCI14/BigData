@@ -1,0 +1,11 @@
+services:
+  mongodb-test:
+    image: mongo:7.0
+    container_name: bigdata-mongodb-test
+    ports:
+      - "27018:27017"
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
