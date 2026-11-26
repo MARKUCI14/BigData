@@ -10,9 +10,11 @@ import streamlit as st
 try:
     from src.storage.mongodb_client import MongoDBClient
     from src.dashboard.pages.historical_analysis import render as render_historical_analysis
+    from src.dashboard.pages.temperature_analysis import render as render_temperature_analysis
 except ModuleNotFoundError:  # Docker image can also expose storage as a top-level package.
     from storage.mongodb_client import MongoDBClient
     from dashboard.pages.historical_analysis import render as render_historical_analysis
+    from dashboard.pages.temperature_analysis import render as render_temperature_analysis
 
 
 PAGES = (
@@ -91,6 +93,11 @@ elif selected_page == PAGES[0] and client is not None:
         render_historical_analysis(client, st.session_state["dashboard_filters"])
     except Exception as exc:
         st.error(f"Could not load historical analysis: {exc}")
+elif selected_page == PAGES[1] and client is not None:
+    try:
+        render_temperature_analysis(client, st.session_state["dashboard_filters"])
+    except Exception as exc:
+        st.error(f"Could not load temperature analysis: {exc}")
 else:
     st.info(
         "Choose a dashboard section from the sidebar. Its analysis view will use the "
