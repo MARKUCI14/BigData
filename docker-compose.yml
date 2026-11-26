@@ -11,7 +11,7 @@ services:
     networks:
       - bigdata-net
     healthcheck:
-      test: ["CMD-SHELL", "echo ruok | nc localhost 2181 | grep imok"]
+      test: ["CMD", "cub", "zk-ready", "localhost", "2181"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -58,17 +58,15 @@ services:
       kafka:
         condition: service_healthy
     entrypoint: ["/bin/bash", "-c"]
-    command: |
-      set -e
-      echo 'Creating Kafka topic: butterfly-observations...'
-      kafka-topics --create --if-not-exists \
-        --bootstrap-server kafka:29092 \
-        --topic butterfly-observations \
-        --partitions 3 \
-        --replication-factor 1 \
-        --config retention.ms=604800000
-      echo 'Topic created successfully.'
-      kafka-topics --describe --bootstrap-server kafka:29092 --topic butterfly-observations
+    command:
+      - >-
+        set -e;
+        echo 'Creating Kafka topic: butterfly-observations...';
+        kafka-topics --create --if-not-exists --bootstrap-server kafka:29092
+        --topic butterfly-observations --partitions 3 --replication-factor 1
+        --config retention.ms=604800000;
+        echo 'Topic created successfully.';
+        kafka-topics --describe --bootstrap-server kafka:29092 --topic butterfly-observations
     networks:
       - bigdata-net
 
@@ -94,14 +92,22 @@ services:
     build:
       context: .
       dockerfile: docker/spark/Dockerfile
-    image: clouded-apollo-spark:3.5
+    image: clouded-apollo-spark:3.5.3
     container_name: spark-master
+    command:
+      - /opt/spark/bin/spark-class
+      - org.apache.spark.deploy.master.Master
+      - --host
+      - spark-master
+      - --port
+      - "7077"
+      - --webui-port
+      - "8080"
     environment:
-      - SPARK_MODE=master
       - SPARK_MASTER_HOST=spark-master
       - SPARK_MASTER_PORT=7077
       - SPARK_MASTER_WEBUI_PORT=8080
-      - SPARK_CONF_DIR=/opt/bitnami/spark/conf
+      - SPARK_CONF_DIR=/opt/spark/conf
       - KAFKA_BROKER=kafka:29092
       - KAFKA_TOPIC=butterfly-observations
       - MONGO_URI=mongodb://mongodb:27017
@@ -110,41 +116,58 @@ services:
       - "8080:8080"
       - "7077:7077"
     volumes:
-      - ./data:/opt/bitnami/spark/data
-      - ./src:/opt/bitnami/spark/src
-      - ./config:/opt/bitnami/spark/config
-      - ./config/spark-defaults.conf:/opt/bitnami/spark/conf/spark-defaults.conf:ro
+      - ./data:/opt/spark/app/data
+      - ./src:/opt/spark/app/src
+      - ./config:/opt/spark/app/config
+      - ./config/spark-defaults.conf:/opt/spark/conf/spark-defaults.conf:ro
     networks:
       - bigdata-net
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8080 || exit 1"]
+      test: ["CMD", "python3", "-c", "from urllib.request import urlopen; urlopen('http://localhost:8080', timeout=3)"]
       interval: 15s
       timeout: 10s
       retries: 5
 
   # --- Spark Worker ---
   spark-worker:
-    image: bitnami/spark:3.5
+    build:
+      context: .
+      dockerfile: docker/spark/Dockerfile
+    image: clouded-apollo-spark:3.5.3
     container_name: spark-worker
     depends_on:
       spark-master:
         condition: service_healthy
+    command:
+      - /opt/spark/bin/spark-class
+      - org.apache.spark.deploy.worker.Worker
+      - spark://spark-master:7077
+      - --host
+      - spark-worker
+      - --port
+      - "7078"
+      - --webui-port
+      - "8081"
+      - --cores
+      - "2"
+      - --memory
+      - 2g
     environment:
-      - SPARK_MODE=worker
-      - SPARK_MASTER_URL=spark://spark-master:7077
-      - SPARK_WORKER_MEMORY=2g
-      - SPARK_WORKER_CORES=2
-      - SPARK_WORKER_WEBUI_PORT=8081
-      - SPARK_CONF_DIR=/opt/bitnami/spark/conf
+      - SPARK_CONF_DIR=/opt/spark/conf
     ports:
       - "8081:8081"
     volumes:
-      - ./data:/opt/bitnami/spark/data
-      - ./src:/opt/bitnami/spark/src
-      - ./config:/opt/bitnami/spark/config
-      - ./config/spark-defaults.conf:/opt/bitnami/spark/conf/spark-defaults.conf:ro
+      - ./data:/opt/spark/app/data
+      - ./src:/opt/spark/app/src
+      - ./config:/opt/spark/app/config
+      - ./config/spark-defaults.conf:/opt/spark/conf/spark-defaults.conf:ro
     networks:
       - bigdata-net
+    healthcheck:
+      test: ["CMD", "python3", "-c", "from urllib.request import urlopen; urlopen('http://localhost:8081', timeout=3)"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
 
   # --- Streamlit Dashboard ---
   streamlit:

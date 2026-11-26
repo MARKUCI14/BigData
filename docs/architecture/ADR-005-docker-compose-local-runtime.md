@@ -13,5 +13,5 @@ Use Docker Compose to define Zookeeper, Kafka, topic initialization, MongoDB, Sp
 
 ## Consequences
 
-One Compose project describes service wiring and host ports. The current Spark image tag `bitnami/spark:3.5` is not pullable in the tested environment, so this decision is not validated until a supported image is selected consistently for Spark master and worker and the stack starts successfully.
+One Compose project describes service wiring and host ports. Spark master and worker use the Apache-published `apache/spark:3.5.3-python3` base through the same local image build, with explicit standalone master/worker commands. The stack still needs a fresh pull and startup check on the target machine.
 

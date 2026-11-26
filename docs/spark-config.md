@@ -34,7 +34,7 @@ spark-submit \
 docker exec spark-master spark-submit \
   --master spark://spark-master:7077 \
   --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.3,org.mongodb.spark:mongo-spark-connector_2.12:10.2.1 \
-  /opt/bitnami/spark/src/processing/run_batch_pipeline.py --stages all
+  /opt/spark/app/src/processing/run_batch_pipeline.py --stages all
 ```
 
 ### Streaming Job
@@ -49,7 +49,7 @@ spark-submit \
 
 | Layer | Path |
 |-------|------|
-| Raw | `/opt/bitnami/spark/data/raw/` |
-| Bronze | `/opt/bitnami/spark/data/bronze/` |
-| Silver | `/opt/bitnami/spark/data/silver/` |
-| Gold | `/opt/bitnami/spark/data/gold/` |
+| Raw | `/opt/spark/app/data/raw/` |
+| Bronze | `/opt/spark/app/data/bronze/` |
+| Silver | `/opt/spark/app/data/silver/` |
+| Gold | `/opt/spark/app/data/gold/` |

@@ -1,6 +1,6 @@
-FROM bitnami/spark:3.5
+FROM apache/spark:3.5.3-python3
 
 USER root
-RUN /opt/bitnami/python/bin/python -m pip install --no-cache-dir pymongo==4.10.1
+RUN python3 -m pip install --no-cache-dir pymongo==4.10.1
 
-USER 1001
+USER spark

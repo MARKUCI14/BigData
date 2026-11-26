@@ -38,7 +38,7 @@ def main():
 
     if not os.path.exists(csv_path):
         # Try Docker path
-        csv_path = "/opt/bitnami/spark/data/raw/Parnassius_obs_cleaned.csv"
+        csv_path = "/opt/spark/app/data/raw/Parnassius_obs_cleaned.csv"
 
     try:
         df = spark.read.csv(csv_path, header=True, inferSchema=True)
